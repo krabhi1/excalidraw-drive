@@ -1,0 +1,56 @@
+.nav {
+  position: fixed;
+  right: 10px;
+  top: 10px;
+  z-index: 999;
+}
+.nav > a {
+  margin: 0px 4px;
+}
+body {
+  margin: 0;
+}
+
+.main {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+}
+.file-box {
+  /* overflow-y: auto;
+  max-height: 200px; */
+  padding-right: 8px;
+}
+.file-item {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 0.375rem;
+  min-width: 200px;
+}
+.file-item:hover {
+  background-color: #f5f5f5;
+  border-radius: 0.375rem;
+}
+.delete-icon,
+.edit-icon {
+  width: 20px;
+  height: 20px;
+  padding: 2px;
+  border-radius: 0.375rem;
+}
+.delete-icon:hover,
+.edit-icon:hover {
+  background-color: #dddadaf5;
+}
+.file-selected {
+  background-color: #cee0c970 !important;
+}
+.file-icon-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
