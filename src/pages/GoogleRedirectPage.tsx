@@ -22,13 +22,16 @@ export default function GoogleRedirectPage() {
         //redirect to editor
         if (accessCode.result) {
           setAccessTokenCookies(accessCode.result.google_access_token);
-          setTokenCookies(accessCode.result.token)
+          setTokenCookies(accessCode.result.token);
           navigate("/", { replace: true });
         } else {
           //show error and redirect to login
           notification.error({
-            message: accessCode.errorMessage + " " + accessCode.statusCode,
+            message: accessCode.errorMessage,
+            description: "try to login again",
           });
+          await delay(1500)
+          navigate("/login", { replace: true });
         }
       } else {
         const error = url.searchParams.get("error") || "invalid code";

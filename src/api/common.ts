@@ -18,6 +18,7 @@ function objectToQueryString(obj: { [key: string]: any }): string {
 export async function apiCall<T>(query: RequestQuery) {
     try {
         const { path, method = "GET", headers = {}, query: params = {}, body, authToken } = query;
+        
         // Construct the URL with query parameters
         let url = path || "";
         // if (Object.keys(params).length > 0) {
@@ -25,7 +26,7 @@ export async function apiCall<T>(query: RequestQuery) {
         //     url += `?${queryParams.toString()}`;
         // }
         url += "?" + objectToQueryString(params)
-
+        console.log(url)
         if (authToken) {
             headers['Authorization'] = `Bearer ${authToken}`;
         }
@@ -58,6 +59,7 @@ export async function apiCall<T>(query: RequestQuery) {
             else {
                 result = await response.json()
             }
+            console.log(result)
         }
         return result;
     } catch (error: any) {
