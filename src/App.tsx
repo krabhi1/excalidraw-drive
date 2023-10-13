@@ -1,9 +1,9 @@
+import "./App.css";
 import { BrowserRouter, Routes, Route, Outlet, Link } from "react-router-dom";
 import EditorPage from "./pages/EditorPage";
 import LoginPage from "./pages/LoginPage";
 import GoogleRedirectPage from "./pages/GoogleRedirectPage";
 import NoPage from "./pages/NoPage";
-import "./App.css";
 import "./config/antd.config";
 import Test from "./pages/Test";
 
