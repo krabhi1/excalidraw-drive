@@ -8,6 +8,8 @@ import {
   setTokenCookies,
 } from "../others/utils";
 import { getAccessToken } from "../api/token";
+import { Spin } from "antd";
+import { LoadingOutlined, MoreOutlined } from "@ant-design/icons";
 export default function GoogleRedirectPage() {
   const navigate = useNavigate();
   useEffect(() => {
@@ -30,7 +32,7 @@ export default function GoogleRedirectPage() {
             message: accessCode.errorMessage,
             description: "try to login again",
           });
-          await delay(1500)
+          await delay(1500);
           navigate("/login", { replace: true });
         }
       } else {
@@ -46,5 +48,9 @@ export default function GoogleRedirectPage() {
     };
     init();
   }, []);
-  return <div>Google redirect</div>;
+  return (
+    <div className="full center">
+      <Spin indicator={<LoadingOutlined style={{ fontSize: "30px" }} />} />
+    </div>
+  );
 }
