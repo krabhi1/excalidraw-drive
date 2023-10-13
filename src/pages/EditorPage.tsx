@@ -22,7 +22,10 @@ import {
 import { useNavigate } from "react-router-dom";
 import Profile from "../components/Profile";
 import { Layout, Skeleton, notification } from "antd";
-import { selectExtraInfo, setSelectedFileId } from "../store/slice/extraInfoSlice";
+import {
+  selectExtraInfo,
+  setSelectedFileId,
+} from "../store/slice/extraInfoSlice";
 import { getFileInfoFromId } from "../store/slice/utils";
 import store from "../store";
 interface DataFile {
@@ -43,40 +46,39 @@ export default function EditorPage() {
   const extraInfo = useAppSelector(selectExtraInfo);
   const selectedFileId = extraInfo.selectedFileId;
 
-  //const [isLoading, setIsLoading] = useState(false)
-  const [activeFileId, setActiveFileId] = useState<string>()
-  const selectedFile = getFileInfoFromId(selectedFileId)
+  const [activeFileId, setActiveFileId] = useState<string>();
   useEffect(() => {
-    setActiveFileId(undefined)
+    setActiveFileId(undefined);
     //clearCanvas()
     //load text from textMap or server
     const loadFile = async () => {
       if (!selectedFileId) return;
       const id = selectedFileId;
-      const data = await dataMap.getTextOrReadDrive(id) as any
+      const data = (await dataMap.getTextOrReadDrive(id)) as any;
       //only if selectedFileId is id
-      const newSelectedFileId = store.getState().extraInfo.value.selectedFileId
+      const newSelectedFileId = store.getState().extraInfo.value.selectedFileId;
       if (selectedFileId && selectedFileId == newSelectedFileId) {
-
         //activeFileInfo.fileId = newSelectedFileId
-        setActiveFileId(newSelectedFileId)
+        setActiveFileId(newSelectedFileId);
         if (data) {
           excalRef.current?.updateScene({
-            ...data
-          })
-
+            ...data,
+          });
         } else {
           excalRef.current?.updateScene({
             elements: [],
             appState: {},
-
-          })
+          });
         }
       }
     };
     loadFile();
-  }, [selectedFileId]);
 
+    //save for last open file
+    if (selectedFileId) {
+      localStorage.setItem("last_open_file_id", selectedFileId);
+    }
+  }, [selectedFileId]);
 
   async function init() {
     //check token or redirect to login
@@ -94,10 +96,12 @@ export default function EditorPage() {
     const files = await listFiles();
     if (files.result) {
       dispatch(setDriveFiles(files.result));
-      //select first file
-      if (files.result.length > 0) {
-        dispatch(setSelectedFileId(files.result[0].id))
+      //
+      let fileId = localStorage.getItem("last_open_file_id");
+      if (!fileId) {
+        fileId = files.result[0].id;
       }
+      dispatch(setSelectedFileId(fileId));
     } else {
       showResultMessage(files);
     }
@@ -110,7 +114,7 @@ export default function EditorPage() {
 
   useEffect(() => {
     if (!activeFileId) {
-      clearCanvas()
+      clearCanvas();
     }
   }, [activeFileId]);
 
@@ -118,9 +122,9 @@ export default function EditorPage() {
     //show add file dialog
     const name = window.prompt("Add file")?.trim();
     if (name && name.length > 0) {
-      const id = "offline_" + name + "_" + Math.random()
+      const id = "offline_" + name + "_" + Math.random();
       dispatch(createOfflineFile({ name, id }));
-      dispatch(setSelectedFileId(id))
+      dispatch(setSelectedFileId(id));
     }
   }
 
@@ -139,44 +143,41 @@ export default function EditorPage() {
     appState: AppState,
     _: BinaryFiles
   ) {
-    const file = getFileInfoFromId(activeFileId)
+    const file = getFileInfoFromId(activeFileId);
     // setData((e) => {
     //   return { elements }
     // })
     if (activeFileId) {
-      const time = Date.now()
-      const id = activeFileId
-      dispatch(updateWithId({
-        id: id,
-        info: {
-          lastUpdate: time
-        }
-      }))
+      const time = Date.now();
+      const id = activeFileId;
+      dispatch(
+        updateWithId({
+          id: id,
+          info: {
+            lastUpdate: time,
+          },
+        })
+      );
       dataMap.setData(id, {
         elements,
-        appState
+        appState,
       });
-
     }
-  };
+  }
 
   function clearCanvas() {
-    excalRef.current?.resetScene()
+    excalRef.current?.resetScene();
   }
   return (
-    <div className="main"
-    >
-      <Excalidraw
-
-
-        ref={excalRef}
-        onChange={handleChange}
-      >
+    <div className="main">
+      <Excalidraw ref={excalRef} onChange={handleChange}>
         <WelcomeScreen>
           <WelcomeScreen.Center>
             <WelcomeScreen.Center.Logo />
             <WelcomeScreen.Center.Heading>
-              {selectedFileId && selectedFileId != activeFileId ? 'loading...' : ' Select file or create one'}
+              {selectedFileId && selectedFileId != activeFileId
+                ? "loading..."
+                : " Select file or create one"}
             </WelcomeScreen.Center.Heading>
           </WelcomeScreen.Center>
         </WelcomeScreen>
