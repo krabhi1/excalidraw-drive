@@ -56,7 +56,11 @@ export function setTokenCookies(token: string) {
 export function randomValue<A, B>(a: A, b: B) {
     return Math.random() > 0.5 ? a : b
 }
-
+export function clearAllCookies() {
+    localStorage.removeItem('google_access_token')
+    localStorage.removeItem('token')
+    localStorage.removeItem('last_open_file_id')
+}
 export function showResultMessage(result: Result) {
 
     notification.error({ message: result.errorMessage, description: result.statusCode })
@@ -71,6 +75,6 @@ export const DEFAULT_FILE_INFO: FileInfo = {
     isDeleted: false
 }
 
-export function isOk(result:Result) {
+export function isOk(result: Result) {
     return (result.statusCode >= 200 && result.statusCode <= 299)
 }

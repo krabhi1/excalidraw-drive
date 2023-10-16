@@ -12,7 +12,12 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { selectProfile, setProfile } from "../store/slice/userProfileSlice";
 import { listFiles } from "../api/drive";
 import { getUserProfile } from "../api/google";
-import { getAccessTokenCookies, showResultMessage } from "../others/utils";
+import {
+  clearAllCookies,
+  delay,
+  getAccessTokenCookies,
+  showResultMessage,
+} from "../others/utils";
 import { activeFileInfo, dataMap, syncManager } from "../store/global";
 import {
   createOfflineFile,
@@ -21,7 +26,7 @@ import {
 } from "../store/slice/filesSlice";
 import { useNavigate } from "react-router-dom";
 import Profile from "../components/Profile";
-import { Layout, Skeleton, notification } from "antd";
+import { Button, Layout, Skeleton, Space, notification } from "antd";
 import {
   selectExtraInfo,
   setSelectedFileId,
@@ -98,10 +103,12 @@ export default function EditorPage() {
       dispatch(setDriveFiles(files.result));
       //
       let fileId = localStorage.getItem("last_open_file_id");
-      if (!fileId) {
+      if (!fileId && files.result.length > 0) {
         fileId = files.result[0].id;
       }
-      dispatch(setSelectedFileId(fileId));
+      if (fileId) {
+        dispatch(setSelectedFileId(fileId));
+      }
     } else {
       showResultMessage(files);
     }
@@ -168,6 +175,11 @@ export default function EditorPage() {
   function clearCanvas() {
     excalRef.current?.resetScene();
   }
+  async function onSignOut() {
+    clearAllCookies();
+    await delay(1000);
+    navigate("/login", { replace: true });
+  }
   return (
     <div className="main">
       <Excalidraw ref={excalRef} onChange={handleChange}>
@@ -183,13 +195,23 @@ export default function EditorPage() {
         </WelcomeScreen>
         <MainMenu>
           <MainMenu.ItemCustom>
-            <Layout className="">
-              {userProfile ? (
+            {userProfile ? (
+              <Space
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  minWidth: "250px",
+                }}
+              >
                 <Profile profile={userProfile} />
-              ) : (
-                <Skeleton active avatar paragraph={{ rows: 0 }} />
-              )}
-            </Layout>
+                <Button onClick={onSignOut} size="small" danger>
+                  SignOut
+                </Button>
+              </Space>
+            ) : (
+              <Skeleton active avatar paragraph={{ rows: 0 }} />
+            )}
           </MainMenu.ItemCustom>
 
           <MainMenu.DefaultItems.ClearCanvas />
