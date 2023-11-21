@@ -15,6 +15,7 @@ function Status({ file }: { file: FileInfo }) {
 
     if (file.isDeleted) return <Spin indicator={<LoadingOutlined style={{ fontSize: "13px", color: 'red' }} />} />
     if (file.isNew) return <Spin indicator={<LoadingOutlined style={{ fontSize: "13px", color: 'green' }} />} />
+    if (file.rename) return <Spin indicator={<LoadingOutlined style={{ fontSize: "13px", color: 'orange' }} />} />
     const isSaving = file.lastUpdate > file.lastSave
     if (isSaving) return <Spin indicator={<LoadingOutlined style={{ fontSize: "13px" }} />} />
     return <></>

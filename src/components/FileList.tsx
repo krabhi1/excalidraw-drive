@@ -6,6 +6,8 @@ import {
 } from "../store/slice/extraInfoSlice";
 import { selectFiles, updateWithId } from "../store/slice/filesSlice";
 import FileListItem from "./FileListItem";
+import { renameFile } from "../api/drive";
+import { FileInfo } from "../interfaces";
 
 export default function FileList() {
   const items_ = useAppSelector(selectFiles);
@@ -18,6 +20,22 @@ export default function FileList() {
   const selectedFileId = extraInfo.selectedFileId;
   //const items = files.filter((e) => !e.isDeleted);
   const [hoverItemID, setHoverItemID] = useState("");
+
+  function handleRename(file: FileInfo) {
+    const name = window.prompt("Rename", file.name)?.trim();
+    if (name && name.length > 0 && name != file.name) {
+      dispatch(
+        updateWithId({
+          id: file.id,
+          info: {
+            rename: {
+              name,
+            },
+          },
+        })
+      );
+    }
+  }
   return (
     <div className="file-box">
       {items.map((file, i) => (
@@ -32,7 +50,9 @@ export default function FileList() {
               })
             );
           }}
-          onRenameClick={(file) => {}}
+          onRenameClick={(file) => {
+            handleRename(file);
+          }}
           onHover={setHoverItemID}
           selectedItemId={selectedFileId}
           key={file.id}

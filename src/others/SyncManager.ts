@@ -1,5 +1,5 @@
 import { serializeAsJSON } from "@excalidraw/excalidraw";
-import { createFile, deleteFile, updateFile } from "../api/drive";
+import { createFile, deleteFile, renameFile, updateFile } from "../api/drive";
 import { FileInfo } from "../interfaces";
 import store from "../store";
 import { dataMap } from "../store/global";
@@ -40,10 +40,25 @@ export default class SyncManager {
                 await this.handleDelete(item)
             } else if (item.lastUpdate > item.lastSave) {
                 await this.handleSave(item)
+            } else if (item.rename) {
+                this.handleRename(item)
             }
 
         }
         this.isLock = false;
+    }
+    private async handleRename(item: FileInfo) {
+        const { result } = await renameFile(item.id, item.rename!!.name)
+        if (result) {
+            //change name and rename=undefine
+            store.dispatch(updateWithId({
+                id: item.id,
+                info: {
+                    name: result.name,
+                    rename: undefined
+                }
+            }))
+        }
     }
     private async handleDelete(item: FileInfo) {
         const { result, ...info } = await deleteFile(item.id)
@@ -87,7 +102,7 @@ export default class SyncManager {
         const newTime = Date.now();
         //const text = JSON.stringify(dataMap.getData(item.id)!!)
         const { elements, appState } = dataMap.getData(item.id)!! as any
-        const text = serializeAsJSON(elements,appState,null as any,'local')
+        const text = serializeAsJSON(elements, appState, null as any, 'local')
         const response = await updateFile(item.id, text)
         store.dispatch(updateWithId({
             id: item.id,

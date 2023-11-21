@@ -10,6 +10,7 @@ export interface FileInfo {
     lastUpdate: number;
     isNew: boolean
     isDeleted: boolean
+    rename?: { name: string }
 }
 export interface ExtraInfo {
     selectedFileId?: string

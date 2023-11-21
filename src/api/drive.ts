@@ -1,13 +1,29 @@
 import { FileInfo, Result } from "../interfaces";
 import { DEFAULT_FILE_INFO, isOk } from "../others/utils";
 import { googleApiCall } from "./common";
-const ext='.excalidraw'
+const ext = '.excalidraw'
 export async function renameFile(fileId: string, newFileName: string) {
+    newFileName += ext
+    const res = await googleApiCall<FileInfo>({
+        path: '/drive/v3/files/' + fileId,
+        method: 'PATCH',
+        query: {
+            fields: 'id, name, createdTime,modifiedTime,mimeType,size'
+        },
+        headers: {
+            'Content-Type': "application/json"
+        },
+        body: {
+            name: newFileName
+        },
+    })
+    return res
 }
 export async function readFile(fileId: string) {
     const { result, ...others } = await googleApiCall<any>({
         path: '/drive/v3/files/' + fileId,
         method: 'GET',
+
         query: {
             alt: 'media'
         },
@@ -23,7 +39,7 @@ export async function readFile(fileId: string) {
     return newResult
 }
 export async function createFile(fileName: string) {
-    fileName+=ext
+    fileName += ext
     //creating file 
     const { result, ...others } = await googleApiCall<any>({
         path: '/drive/v3/files',
@@ -32,7 +48,7 @@ export async function createFile(fileName: string) {
             name: fileName,
             mimeType: "application/json"
         },
-        query:{
+        query: {
             fields: 'id, name, createdTime,modifiedTime,mimeType,size',
         }
     })
