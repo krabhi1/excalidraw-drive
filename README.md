@@ -7,4 +7,4 @@ auto save your Excalidraw creations effortlessly with Google Drive
 - have options to create multiple files
 - easy to login 
 ## Others
-[backend repo](https://github.com/krabhi7/excalidraw-drive-back)
+[backend repo] (https://github.com/krAbhiDev/exacalidraw-drive-serverless)
