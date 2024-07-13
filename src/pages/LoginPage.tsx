@@ -1,5 +1,7 @@
 import { Button } from "antd";
 export default function LoginPage() {
+
+  console.log("LoginPage", import.meta.env);
   function handleLogin() {
     //open google dialog
     const { VITE_CLIENT_ID, VITE_REDIRECT_URL } = import.meta.env;
