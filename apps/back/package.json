@@ -1,11 +1,15 @@
 {
-  "name": "aws-node-express-dynamodb-api-project",
+  "name": "back",
   "version": "1.0.0",
   "description": "",
   "type": "module",
+  "scripts": {
+    "build":"npx esbuild src/index.js --bundle --outfile=dist/index.cjs --format=cjs  --platform=node"
+  },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.525.0",
     "@aws-sdk/lib-dynamodb": "^3.525.0",
+    "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
@@ -13,6 +17,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@aws-sdk/types": "^3.523.0"
+    "@aws-sdk/types": "^3.523.0",
+    "esbuild": "^0.23.0"
   }
 }

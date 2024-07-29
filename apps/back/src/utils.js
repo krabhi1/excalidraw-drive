@@ -14,12 +14,17 @@ export function generateJWT(payload, secret, expiresIn = '1h') {
 export function verifyJWT(token, secret) {
     try {
         const decoded = jwt.verify(token, secret)
+    
         return decoded;
     } catch (error) {
         console.log(error)
         // If the token is invalid or has expired, an error will be thrown
         return null;
     }
+}
+
+export function decodeToken(token,secret) {
+    return jwt.decode(token, { complete: true, secret });
 }
 
 function objectToQueryString(obj) {
@@ -93,4 +98,8 @@ export async function apiCall(query) {
 }
 export async function googleApiCall(query) {
     return apiCall(query)
+}
+
+export async function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
