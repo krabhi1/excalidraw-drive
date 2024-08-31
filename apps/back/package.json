@@ -4,7 +4,8 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "build":"npx esbuild src/index.js --bundle --outfile=dist/index.cjs --format=cjs  --platform=node"
+    "build":"npx esbuild src/index.js --bundle --outfile=dist/index.cjs --format=cjs  --platform=node",
+    "dev": "npx sls dev"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.525.0",
