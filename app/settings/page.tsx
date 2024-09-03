@@ -1,4 +1,4 @@
 
 export default function Home() {
- return <div>Root</div>
+ return <div>Settings</div>
 }
