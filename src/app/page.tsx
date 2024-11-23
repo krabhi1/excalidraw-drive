@@ -1,7 +1,4 @@
-import { Button } from "@/components/ui/button";
-
+"use client";
 export default function Page() {
-  return (
-    <div></div>
-  );
+  return <div>Home</div>;
 }
