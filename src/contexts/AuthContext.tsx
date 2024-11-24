@@ -1,8 +1,6 @@
-import { auth } from "@/configs/firebase";
 import { toast, useToast } from "@/hooks/use-toast";
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 
 export type AuthContextType = {
   email: string;
@@ -27,7 +25,7 @@ export function AuthProvider({
     photoUrl: "",
     uid: "",
   });
-  const [user, loading, error] = useAuthState(auth);
+  const [user, loading, error] = [] as any;
 
   const path = usePathname();
   const navigate = useRouter();
