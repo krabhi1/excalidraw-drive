@@ -11,7 +11,7 @@ export type AuthContextType = {
   photoUrl: string;
 };
 
-const AuthContext = createContext<AuthContextType | null>(null);
+export const AuthContext = createContext<AuthContextType | null>(null);
 type AuthContextProviderProps = React.PropsWithChildren<{
   unProtectedPaths?: string[];
 }>;
