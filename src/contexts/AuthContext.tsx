@@ -20,7 +20,7 @@ export function AuthProvider({
   children,
   unProtectedPaths,
 }: AuthContextProviderProps) {
-  const unprotectedPaths = unProtectedPaths || ["/login"];
+  const unprotectedPaths = unProtectedPaths || ["/login", "/demo"];
   const [authData, setAuthData] = useState<AuthContextType>({
     name: "",
     email: "",
