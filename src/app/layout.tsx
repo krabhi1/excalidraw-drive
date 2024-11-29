@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import ContextProvider from "@/contexts/ContextProvider";
+import Providers from "@/contexts/Providers";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -27,14 +27,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <script src="https://accounts.google.com/gsi/client" async></script>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ContextProvider>
+        <Providers>
           {children}
           <Toaster />
-        </ContextProvider>
+        </Providers>
       </body>
     </html>
   );
