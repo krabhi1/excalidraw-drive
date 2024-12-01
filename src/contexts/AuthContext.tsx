@@ -32,7 +32,6 @@ export function AuthProvider({
   const navigate = useRouter();
 
   const isProtected = !unprotectedPaths.includes(path);
-
   useEffect(() => {
     if (!user && !isLoading && isProtected) {
       //wait for error

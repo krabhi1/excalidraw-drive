@@ -18,13 +18,16 @@ export default function useGoogleLogin() {
         }
       );
       const { email, name, picture: photoUrl } = result.data;
-      setUser({
+      const userInfo = {
         email,
         name,
         photoUrl,
         accessToken: tokenResponse.access_token,
-      });
+      };
+      setUser(userInfo);
       setLoading(false);
+      // save to localstorage
+      localStorage.setItem("user", JSON.stringify(userInfo));
     },
     onError: (error) => {
       console.log(error);
