@@ -1,12 +1,13 @@
+import { useUserStore } from "@/store/user-store";
 import { toast, useToast } from "@/hooks/use-toast";
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useEffect, useState } from "react";
 
 export type AuthContextType = {
   email: string;
-  uid: string;
   name: string;
   photoUrl: string;
+  accessToken: string;
 };
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -23,9 +24,9 @@ export function AuthProvider({
     name: "",
     email: "",
     photoUrl: "",
-    uid: "",
+    accessToken: "",
   });
-  const [user, loading, error] = [] as any;
+  const { user, isLoading, error } = useUserStore();
 
   const path = usePathname();
   const navigate = useRouter();
@@ -33,30 +34,27 @@ export function AuthProvider({
   const isProtected = !unprotectedPaths.includes(path);
 
   useEffect(() => {
-    if (!user && !loading && isProtected) {
+    if (!user && !isLoading && isProtected) {
       //wait for error
       navigate.push("/login");
     }
     if (error) {
       toast({
-        title: "Error: " + error.name,
-        description: error.message,
+        title: "Error",
+        description: error,
         variant: "destructive",
       });
     }
-  }, [user, loading, error, isProtected, toast]);
+  }, [user, isLoading, error, isProtected, toast]);
   useEffect(() => {
     if (user) {
       setAuthData({
-        name: user.displayName || "",
-        email: user.email || "",
-        photoUrl: user.photoURL || "",
-        uid: user.uid,
+        ...user,
       });
     }
   }, [user]);
   //redirect to signin
-  if (loading) return "Loading...";
+  if (isLoading) return "Loading...";
   if (!user && isProtected) {
     return null;
   }
