@@ -19,6 +19,7 @@
     "immer": "^10.1.1",
     "lucide-react": "^0.460.0",
     "next": "15.0.3",
+    "next-auth": "^5.0.0-beta.25",
     "react": "19.0.0-rc-66855b96-20241106",
     "react-dom": "19.0.0-rc-66855b96-20241106",
     "tailwind-merge": "^2.5.4",

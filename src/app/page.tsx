@@ -1,12 +1,13 @@
 "use client";
 
-import { useAuth } from "@/hooks/use-auth";
+import { useSession } from "next-auth/react";
 
 export default function Page() {
-  const { email, name, photoUrl } = useAuth();
+  const { data, status, update } = useSession();
+
   return (
     <div>
-      Home {email} {name}
+      Home {status} {JSON.stringify(data)}
     </div>
   );
 }

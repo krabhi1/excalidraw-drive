@@ -1,5 +1,4 @@
 import { toast } from "@/hooks/use-toast";
-import { useUserStore } from "@/store/user-store";
 import axios from "axios";
 export type DriveBaseFile = {
   createdTime: string;
@@ -156,14 +155,14 @@ driveApi.interceptors.response.use(
         // Handle 401 errors
         console.error("Unauthorized! Redirecting to login...");
         //just delete the user
-        const state = useUserStore.getState();
-        toast({
-          title: "Google token expired",
-          description:
-            "Token expired, so you need to login again. Token is only valid for 1 hour",
-        });
-        state.setUser(undefined);
-        localStorage.removeItem("user");
+        // const state = useUserStore.getState();
+        // toast({
+        //   title: "Google token expired",
+        //   description:
+        //     "Token expired, so you need to login again. Token is only valid for 1 hour",
+        // });
+        // state.setUser(undefined);
+        // localStorage.removeItem("user");
       }
     }
 

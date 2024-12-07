@@ -1,14 +1,9 @@
-import { useUserStore } from "@/store/user-store";
 import { toast, useToast } from "@/hooks/use-toast";
+import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useEffect, useState } from "react";
 
-export type AuthContextType = {
-  email: string;
-  name: string;
-  photoUrl: string;
-  accessToken: string;
-};
+export type AuthContextType = {};
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 type AuthContextProviderProps = React.PropsWithChildren<{
@@ -20,41 +15,29 @@ export function AuthProvider({
   unProtectedPaths,
 }: AuthContextProviderProps) {
   const unprotectedPaths = unProtectedPaths || ["/login", "/demo"];
-  const [authData, setAuthData] = useState<AuthContextType>({
-    name: "",
-    email: "",
-    photoUrl: "",
-    accessToken: "",
-  });
-  const { user, isLoading, error } = useUserStore();
-
+  const [authData, setAuthData] = useState<AuthContextType>({});
+  const { data, status, update } = useSession();
   const path = usePathname();
   const navigate = useRouter();
 
   const isProtected = !unprotectedPaths.includes(path);
   useEffect(() => {
-    if (!user && !isLoading && isProtected) {
+    if (!data && status != "loading" && isProtected) {
       //wait for error
       navigate.push("/login");
     }
-    if (error) {
-      toast({
-        title: "Error",
-        description: error,
-        variant: "destructive",
-      });
-    }
-  }, [user, isLoading, error, isProtected, toast]);
-  useEffect(() => {
-    if (user) {
-      setAuthData({
-        ...user,
-      });
-    }
-  }, [user]);
+    // if (status=='unauthenticated') {
+    //   toast({
+    //     title: "Error",
+    //     description: error,
+    //     variant: "destructive",
+    //   });
+    // }
+  }, [data, status, isProtected, toast]);
+  useEffect(() => {}, [data]);
   //redirect to signin
-  if (isLoading) return "Loading...";
-  if (!user && isProtected) {
+  if (status == "loading") return "Loading...";
+  if (!data && isProtected) {
     return null;
   }
   return (
