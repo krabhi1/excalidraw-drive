@@ -1,5 +1,6 @@
 import NextAuth, { type User } from "next-auth";
 import Google from "next-auth/providers/google";
+import { env } from "./env";
 export const scopes = [
   "https://www.googleapis.com/auth/drive.file",
   "https://www.googleapis.com/auth/userinfo.email",
@@ -43,8 +44,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           const response = await fetch("https://oauth2.googleapis.com/token", {
             method: "POST",
             body: new URLSearchParams({
-              client_id: process.env.AUTH_GOOGLE_ID!,
-              client_secret: process.env.AUTH_GOOGLE_SECRET!,
+              client_id: env.authGoogleId,
+              client_secret: env.authGoogleSecret,
               grant_type: "refresh_token",
               refresh_token: token.refresh_token!,
             } as any),
