@@ -1,17 +1,18 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/use-auth";
 import { useSession, signOut } from "next-auth/react";
 
 export default function Page() {
-  const { data, status, update } = useSession();
+  const auth = useAuth();
 
   return (
     <div>
       <div>
         <Button onClick={() => signOut()}>SignOut</Button>
       </div>
-      Home {status} {JSON.stringify(data)}
+      Home {JSON.stringify(auth)}
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { toast, useToast } from "@/hooks/use-toast";
+import { Loader2Icon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useEffect, useState } from "react";
@@ -49,8 +50,13 @@ export function AuthProvider({
       });
     }
   }, [session]);
-  //redirect to signin
-  if (status == "loading" && isProtected) return "Loading...";
+
+  if ((status == "loading" && isProtected) || !authData)
+    return (
+      <div className="fixed w-full h-full  flex justify-center items-center">
+        <Loader2Icon className="animate-spin" />
+      </div>
+    );
   if (!session && isProtected) {
     return null;
   }

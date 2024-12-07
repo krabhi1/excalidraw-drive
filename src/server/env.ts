@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const parsedEnv = {
-  authSecret: process.env.AUTH_SECRET!,
+  authSecret: process.env.AUTH_SECRET,
   authTrustHost: process.env.AUTH_TRUST_HOST, // Convert to boolean
   authGoogleSecret: process.env.AUTH_GOOGLE_SECRET!,
   authGoogleId: process.env.AUTH_GOOGLE_ID!,
@@ -9,7 +9,7 @@ export const parsedEnv = {
 
 const envSchema = z.object({
   authSecret: z.string().min(1, "AUTH_SECRET must be set"),
-  authTrustHost: z.boolean().default(false),
+  authTrustHost: z.string().min(1, "AUTH_TRUST_HOST must be set"),
   authGoogleSecret: z.string().min(1, "AUTH_GOOGLE_SECRET must be set"),
   authGoogleId: z.string().min(1, "AUTH_GOOGLE_ID must be set"),
 });
