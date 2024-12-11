@@ -9,8 +9,8 @@ export type DriveBaseFile = {
 };
 export type DriveFolder = DriveBaseFile;
 export type DriveFile = DriveBaseFile & { size: number };
-const FILE_EXTENSION = ".excalidraw";
-const FOLDER_NAME = "exaclidraw-drive";
+export const FILE_EXTENSION = ".excalidraw";
+export const DEFAULT_FOLDER_NAME = "exaclidraw-drive";
 export let defaultFolderId: string;
 const driveApi = axios.create({
   baseURL: "https://www.googleapis.com",
@@ -38,6 +38,7 @@ export async function renameFile(fileId: string, newFileName: string) {
   );
   return result.data as DriveFile;
 }
+// TODO: read binary data like images
 export async function readFileData(fileId: string) {
   const result = await driveApi.get("/drive/v3/files/" + fileId, {
     params: {
@@ -46,13 +47,19 @@ export async function readFileData(fileId: string) {
   });
   return result.data as string;
 }
-export async function createFile(fileName: string) {
+export async function createFile({
+  fileName,
+  dirId,
+}: {
+  fileName: string;
+  dirId?: string;
+}) {
   const result = await driveApi.post(
     "/drive/v3/files",
     {
       name: fileName + FILE_EXTENSION,
       mimeType: "application/json",
-      parents: [defaultFolderId],
+      parents: dirId ? [dirId] : [],
     },
     {
       params: {
@@ -62,12 +69,19 @@ export async function createFile(fileName: string) {
   );
   return result.data as DriveFile;
 }
-export async function createFolder(folderName: string) {
+export async function createFolder({
+  name,
+  dirId,
+}: {
+  name: string;
+  dirId?: string;
+}) {
   const result = await driveApi.post(
     "/drive/v3/files",
     {
-      name: folderName,
+      name: name,
       mimeType: "application/vnd.google-apps.folder",
+      parents: dirId ? [dirId] : [],
     },
     {
       params: {
@@ -80,6 +94,7 @@ export async function createFolder(folderName: string) {
 export async function deleteFile(fileId: string) {
   await driveApi.delete("/drive/v3/files/" + fileId);
 }
+// Todo upload binary file
 export async function updateFileData(fileId: string, data: string) {
   const result = await driveApi.patch(
     "/upload/drive/v3/files/" + fileId,
@@ -97,11 +112,22 @@ export async function updateFileData(fileId: string, data: string) {
   return result.data as DriveFile;
 }
 // list all files of default folder
-export async function getFiles() {
+export async function getFiles({
+  dirId,
+  filters,
+  mimeType,
+}: {
+  dirId?: string;
+  filters?: string;
+  mimeType?: string;
+}) {
+  const dirQuery = dirId ? `'${dirId}' in parents and` : "";
+  const filterQuery = filters ? ` name contains '${filters}' and` : "";
+  const mimeTypeQuery = mimeType ? ` mimeType='${mimeType}' ` : "";
   const result = await driveApi.get("/drive/v3/files", {
     params: {
       pageSize: 1000,
-      q: `trashed=false and '${defaultFolderId}' in parents and name contains '${FILE_EXTENSION}' and mimeType='application/json'`,
+      q: `trashed=false and ${dirQuery} ${filterQuery}  ${mimeTypeQuery}`,
       fields:
         "nextPageToken, files(id, name, createdTime,modifiedTime,mimeType,size)",
     },
@@ -109,11 +135,13 @@ export async function getFiles() {
   return result.data.files as DriveFile[];
 }
 // folders
-export async function getFolders() {
+export async function getFolders({ dirId }: { dirId?: string }) {
+  const dirQuery = dirId ? `'${dirId}' in parents ` : "";
+
   const result = await driveApi.get("/drive/v3/files", {
     params: {
       pageSize: 1000,
-      q: `trashed=false and mimeType='application/vnd.google-apps.folder'`,
+      q: `trashed=false and mimeType='application/vnd.google-apps.folder' and ${dirQuery}`,
       fields:
         "nextPageToken, files(id, name, createdTime,modifiedTime,mimeType)",
     },
@@ -121,20 +149,20 @@ export async function getFolders() {
   return result.data.files as DriveFolder[];
 }
 
-export async function driveTest(token: string) {
-  driveApi.defaults.headers["Authorization"] = "Bearer " + token;
-  const folder = await createFolder("folder-" + Math.random());
-  const folders = await getFolders();
-  defaultFolderId = folders[0].id;
-  const file = await createFile("file-" + Math.random());
-  const rename = await renameFile(file.id, "file-rename-" + Math.random());
-  const updated = await updateFileData(file.id, "this is good ".repeat(100));
-  const read = await readFileData(file.id);
-  const files = await getFiles();
-  const d = await deleteFile(file.id);
+// export async function driveTest(token: string) {
+//   driveApi.defaults.headers["Authorization"] = "Bearer " + token;
+//   const folder = await createFolder("folder-" + Math.random());
+//   const folders = await getFolders();
+//   defaultFolderId = folders[0].id;
+//   const file = await createFile("file-" + Math.random());
+//   const rename = await renameFile(file.id, "file-rename-" + Math.random());
+//   const updated = await updateFileData(file.id, "this is good ".repeat(100));
+//   const read = await readFileData(file.id);
+//   const files = await getFiles();
+//   const d = await deleteFile(file.id);
 
-  console.log({ folders, files, file, rename, updated, read, d, folder });
-}
+//   console.log({ folders, files, file, rename, updated, read, d, folder });
+// }
 
 //subscibe for access_token change
 // useUserStore.subscribe((state) => {
