@@ -16,6 +16,10 @@ const driveApi = axios.create({
   baseURL: "https://www.googleapis.com",
 });
 
+export function initDriveApi({ token }: { token: string }) {
+  driveApi.defaults.headers["Authorization"] = "Bearer " + token;
+}
+
 //store all files inside a excalidraw-drive folder
 export async function renameFile(fileId: string, newFileName: string) {
   const result = await driveApi.patch(

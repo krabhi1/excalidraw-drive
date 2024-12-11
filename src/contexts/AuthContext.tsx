@@ -1,4 +1,5 @@
 import { toast, useToast } from "@/hooks/use-toast";
+import { initDriveApi } from "@/lib/drive";
 import { Loader2Icon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
@@ -22,7 +23,7 @@ export function AuthProvider({
 }: AuthContextProviderProps) {
   const unprotectedPaths = unProtectedPaths || ["/login", "/demo"];
   const [authData, setAuthData] = useState<AuthContextType | null>(null);
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const path = usePathname();
   const navigate = useRouter();
 
@@ -48,10 +49,13 @@ export function AuthProvider({
         imageUrl: session.user.image || "",
         name: session.user.name || "",
       });
+      initDriveApi({
+        token: session.access_token,
+      });
     }
   }, [session]);
 
-  if ((status == "loading" && isProtected) || !authData)
+  if ((status == "loading" || !authData) && isProtected)
     return (
       <div className="fixed w-full h-full  flex justify-center items-center">
         <Loader2Icon className="animate-spin" />
